@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:my_expenses/add_expense.dart';
+import 'package:my_expenses/home_expense.dart';
 
 class BottomNavigation extends StatefulWidget {
 
@@ -14,7 +15,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> appViews = [
-      const Text('home'),
+      HomeExpenses(),
       AddExpenses(),
       const Text('dhgshddwddsh')
     ];
@@ -33,8 +34,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
       body: appViews[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
-        selectedItemColor: Colors.purple,
-        unselectedItemColor: Colors.red,
+        selectedItemColor: Colors.deepPurple,
+        unselectedItemColor: Colors.deepOrange,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: const [
