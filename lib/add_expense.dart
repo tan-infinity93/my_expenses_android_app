@@ -20,7 +20,8 @@ class _AddExpensesState extends State<AddExpenses> {
       child: Card(
         color: Colors.white,
         shadowColor: Colors.white70,
-        elevation: 12.0,
+        surfaceTintColor: Colors.transparent,
+        elevation: 2.0,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
