@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:my_expenses/add_expense.dart';
+import 'package:my_expenses/all_expenses.dart';
 import 'package:my_expenses/home_expense.dart';
 
 class BottomNavigation extends StatefulWidget {
@@ -16,6 +17,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   Widget build(BuildContext context) {
     final List<Widget> appViews = [
       HomeExpenses(),
+      AllExpenses(),
       AddExpenses(),
       const Text('dhgshddwddsh')
     ];
@@ -42,6 +44,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.donut_large),
+            label: 'All Expenses',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),
