@@ -21,8 +21,9 @@ class MyApp extends StatelessWidget {
       // home: BottomNavigation(),
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          title: const Text('My Expenses'),
+          backgroundColor: Colors.deepPurple,
+          foregroundColor: Colors.white,
+          title: const Text('Flask Expenses'),
         ),
         body: BottomNavigation(),
         // bottomNavigationBar: BottomNavigation(),
