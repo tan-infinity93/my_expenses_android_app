@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:async';
@@ -14,12 +15,6 @@ class AddExpenses extends StatefulWidget {
 class _AddExpensesState extends State<AddExpenses> {
   final TextEditingController expenseCostController = TextEditingController();
   final TextEditingController expenseDateController = TextEditingController();
-  // final List<DropdownMenuItem<String>> expenseCategories = [
-  //   "MEDICAL", "MARKET", "TRAVEL", "EDUCATION", "EMI", "INTERNET",
-  //   "ELECTRICITY", "MUTUAL_FUNDS", "GROCERY", "ONLINE_FOOD/APPS", "CLOTHES", "ONE_TIME",
-  //   "MOVIE_TICKETS", "RESTAURANT", "SOVEREIGN_GOLD_BONDS", "OTHER_BONDS", "DISASTER_RELIEF",
-  //   "GAS_CYLINDER", "TURTLE_FOOD", "SHARES", "KUKASADAN_MISCELLANEOUS", "GIFTING"
-  // ];
   String selectedValue = "MEDICAL";
   final List<DropdownMenuItem<String>> expenseCategories = [
     DropdownMenuItem(child: Text("MEDICAL"),value: "MEDICAL"),
@@ -52,7 +47,6 @@ class _AddExpensesState extends State<AddExpenses> {
     DropdownMenuItem(child: Text("KUKASADAN_MISCELLANEOUS"),value: "KUKASADAN_MISCELLANEOUS"),
     DropdownMenuItem(child: Text("GIFTING"),value: "GIFTING")
   ];
-
   bool showDialog = false;
 
   @override
@@ -64,256 +58,130 @@ class _AddExpensesState extends State<AddExpenses> {
       padding: const EdgeInsets.all(10.0),
       child: Container(
         width: deviceWidth,
-        height: deviceHeight,
+        height: deviceHeight * 0.75,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 10)),
+            const Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 10)),
             const Text(
               'Add Expenses:',
               style: TextStyle(
-                  fontSize: 25.0,
+                  fontSize: 30.0,
                   fontWeight: FontWeight.bold
               ),
             ),
-            const Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 10)),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(25.0),
-              child: Card(
-                color: Colors.white,
-                shadowColor: Colors.white70,
-                surfaceTintColor: Colors.white,
-                elevation: 5.0,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                  child: Column(
-                    children: [
-                      Visibility(
-                        visible: showDialog,
-                        child: Container(
-                          width: deviceWidth * 0.25,
-                          height: deviceHeight * 0.25,
-                          child: Card(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.done,
-                                  color: Colors.deepPurple,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      const Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 10)),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          prefixIcon: Icon(Icons.wallet),
-                          border: OutlineInputBorder(),
-                          labelText: 'Enter Expense Amount:',
-                        ),
-                        controller: expenseCostController,
-                        keyboardType: TextInputType.number,
-                      ),
-                      const Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 10)),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          prefixIcon: Icon(Icons.calendar_month),
-                          border: OutlineInputBorder(),
-                          labelText: 'Enter Expense Date:',
-                        ),
-                        controller: expenseDateController,
-                        keyboardType: TextInputType.none,
-                        onTap: () async {
-                            DateTime? pickedDate = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(), //get today's date
-                                firstDate: DateTime(2000), //DateTime.now() - not to allow to choose before today.
-                                lastDate: DateTime(2101)
-                            );
-
-                            if(pickedDate != null){
-                              print(pickedDate);
-                              expenseDateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
-                            }
-                          }
-                      ),
-                      const Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 10)),
-                      DropdownButtonFormField(
-                        decoration: const InputDecoration(
-                          prefixIcon: Icon(Icons.list_alt),
-                          border: OutlineInputBorder(),
-                          labelText: 'Enter Expense Category:',
-                        ),
-                        value: selectedValue,
-                        items: expenseCategories,
-                        onChanged: (clickedItem) {
-                          setState(() {
-                            selectedValue = clickedItem!;
-                          });
-                        }
-                      ),
-                      const Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 10)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TextButton(
-                            style: ButtonStyle(
-                              foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                              backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
-                              fixedSize: MaterialStateProperty.all<Size>(
-                                  Size(deviceWidth * 0.25, deviceHeight * 0.06)
-                              ),
-                            ),
-                            onPressed: () async {
-                              print(expenseCostController.text);
-                              print(expenseDateController.text);
-                              print(selectedValue);
-
-                              var expenseCost = expenseCostController.text;
-                              var expenseDate = expenseDateController.text;
-                              var expenseType = selectedValue;
-
-                              final url = 'https://flask-expenses.fly.dev/expenses/v1/manage-add';
-                              final headers = {
-                                'Content-Type': 'application/json'
-                              };
-                              final payload = {
-                                'expense_type': expenseType,
-                                'expense_cost': expenseCost,
-                                'expense_date': expenseDate
-                              };
-
-                              var restApiAdapter = RestAPIAdapter();
-                              var apiResponse = await restApiAdapter.postRequest(url, headers, payload);
-
-                              var responseBody = apiResponse[0];
-                              var responseCode = apiResponse[1];
-
-                              print(url);
-                              print(responseBody);
-                              print(responseCode);
-
-                              if (responseCode == 200) {
-                                const snackBar = SnackBar(
-                                    behavior: SnackBarBehavior.floating,
-                                    margin: EdgeInsets.fromLTRB(10, 0, 10, 500),
-                                    content: Text("Expense added"),
-                                    dismissDirection: DismissDirection.none
-                                );
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                              }
-                              // setState(() {
-                              //   showDialog = false;
-                              // });
-                            },
-                            child: const Text('Submit'),
-                          )
-                        ],
-                      ),
-                      const Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 10)),
-                      
-                    ],
-                  ),
-                ),
+            const Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 10)),
+            TextFormField(
+              decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.wallet),
+                border: OutlineInputBorder(),
+                labelText: 'Enter Expense Amount:',
               ),
-            )
+              controller: expenseCostController,
+              keyboardType: TextInputType.number,
+            ),
+            const Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 20)),
+            TextFormField(
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.calendar_month),
+                  border: OutlineInputBorder(),
+                  labelText: 'Enter Expense Date:',
+                ),
+                controller: expenseDateController,
+                keyboardType: TextInputType.none,
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(), //get today's date
+                      firstDate: DateTime(2000), //DateTime.now() - not to allow to choose before today.
+                      lastDate: DateTime(2101)
+                  );
+
+                  if(pickedDate != null){
+                    print(pickedDate);
+                    expenseDateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+                  }
+                }
+            ),
+            const Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 20)),
+            DropdownButtonFormField(
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.list_alt),
+                  border: OutlineInputBorder(),
+                  labelText: 'Enter Expense Category:',
+                ),
+                value: selectedValue,
+                items: expenseCategories,
+                onChanged: (clickedItem) {
+                  setState(() {
+                    selectedValue = clickedItem!;
+                  });
+                }
+            ),
+            const Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 10)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextButton(
+                  style: ButtonStyle(
+                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
+                    fixedSize: MaterialStateProperty.all<Size>(
+                        Size(deviceWidth * 0.25, deviceHeight * 0.06)
+                    ),
+                  ),
+                  onPressed: () async {
+                    print(expenseCostController.text);
+                    print(expenseDateController.text);
+                    print(selectedValue);
+
+                    var expenseCost = expenseCostController.text;
+                    var expenseDate = expenseDateController.text;
+                    var expenseType = selectedValue;
+
+                    final url = 'https://flask-expenses.fly.dev/expenses/v1/manage-add';
+                    final headers = {
+                      'Content-Type': 'application/json'
+                    };
+                    final payload = {
+                      'expense_type': expenseType,
+                      'expense_cost': expenseCost,
+                      'expense_date': expenseDate
+                    };
+
+                    var restApiAdapter = RestAPIAdapter();
+                    var apiResponse = await restApiAdapter.postRequest(url, headers, payload);
+
+                    var responseBody = apiResponse[0];
+                    var responseCode = apiResponse[1];
+
+                    print(url);
+                    print(responseBody);
+                    print(responseCode);
+
+                    if (responseCode == 200) {
+                      const snackBar = SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          margin: EdgeInsets.fromLTRB(10, 0, 10, 500),
+                          content: Text("Expense added"),
+                          dismissDirection: DismissDirection.none
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
+                    // setState(() {
+                    //   showDialog = false;
+                    // });
+                  },
+                  child: const Text('Submit'),
+                )
+              ],
+            ),
+            const Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 10)),
           ],
-        ),
+        )
       ),
-      // child: Card(
-      //   color: Colors.white,
-      //   shadowColor: Colors.white70,
-      //   surfaceTintColor: Colors.white,
-      //   // elevation: 12.0,
-      //   child: Padding(
-      //     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-      //     child: Column(
-      //       mainAxisAlignment: MainAxisAlignment.start,
-      //       crossAxisAlignment: CrossAxisAlignment.start,
-      //       children: [
-      //         const Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 10)),
-      //         const Text(
-      //           'Add Expenses:',
-      //           style: TextStyle(
-      //             fontSize: 30.0,
-      //             fontWeight: FontWeight.bold
-      //           ),
-      //         ),
-      //         const Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 10)),
-      //         TextFormField(
-      //           decoration: const InputDecoration(
-      //             prefixIcon: Icon(Icons.wallet),
-      //             border: OutlineInputBorder(),
-      //             labelText: 'Enter Expense Amount:',
-      //           ),
-      //           controller: expenseController,
-      //           keyboardType: TextInputType.number,
-      //         ),
-      //         const Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 20)),
-      //         TextFormField(
-      //           decoration: const InputDecoration(
-      //             prefixIcon: Icon(Icons.calendar_month),
-      //             border: OutlineInputBorder(),
-      //             labelText: 'Enter Expense Date:',
-      //           ),
-      //           controller: expenseDateController,
-      //           keyboardType: TextInputType.none,
-      //           onTap: () async {
-      //               DateTime? pickedDate = await showDatePicker(
-      //                   context: context,
-      //                   initialDate: DateTime.now(), //get today's date
-      //                   firstDate: DateTime(2000), //DateTime.now() - not to allow to choose before today.
-      //                   lastDate: DateTime(2101)
-      //               );
-      //
-      //               if(pickedDate != null){
-      //                 print(pickedDate);
-      //                 expenseDateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
-      //               }
-      //             }
-      //         ),
-      //         const Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 20)),
-      //         DropdownButtonFormField(
-      //           decoration: const InputDecoration(
-      //             prefixIcon: Icon(Icons.list_alt),
-      //             border: OutlineInputBorder(),
-      //             labelText: 'Enter Expense Category:',
-      //           ),
-      //           value: selectedValue,
-      //           items: expenseCategories,
-      //           onChanged: (clickedItem) {
-      //             setState(() {
-      //               selectedValue = clickedItem!;
-      //             });
-      //           }
-      //         ),
-      //         const Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 10)),
-      //         Row(
-      //           mainAxisAlignment: MainAxisAlignment.center,
-      //           crossAxisAlignment: CrossAxisAlignment.start,
-      //           children: [
-      //             TextButton(
-      //               style: ButtonStyle(
-      //                 foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-      //                 backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
-      //                 fixedSize: MaterialStateProperty.all<Size>(
-      //                     Size(deviceWidth * 0.30, deviceHeight * 0.06)
-      //                 ),
-      //               ),
-      //               onPressed: () { },
-      //               child: Text('Submit'),
-      //             )
-      //           ],
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // ),
     );
   }
 }
